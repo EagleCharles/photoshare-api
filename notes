@@ -1,0 +1,9 @@
+npx prisma generate   # regenerates client
+npx prisma migrate dev  # creates tables in the new database
+
+DATABASE_URL="postgresql://postgres:JT43Sj962hLKHUVO@photoshare-db-poji.postgres.database.azure.com:5432/photoshare-db" npx prisma generate
+
+DATABASE_URL="postgresql://postgres:JT43Sj962hLKHUVO@photoshare-db-poji.postgres.database.azure.com:5432/photoshare-db" npx prisma migrate dev
+
+npm install
+npm run start:dev
