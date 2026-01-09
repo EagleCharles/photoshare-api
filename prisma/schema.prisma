@@ -10,13 +10,13 @@ generator client {
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
-  password  String    
+  password  String
   name      String?
-  role      String    @default("consumer")
+  role      String    @default("consumer") // Values: "creator" or "consumer"
   photos    Photo[]
   comments  Comment[]
-  createdAt DateTime  @default(now())
   likes     Like[]
+  createdAt DateTime  @default(now())
 }
 
 model Photo {
@@ -24,7 +24,9 @@ model Photo {
   url       String
   title     String
   caption   String?
-  creator   User      @relation(fields: [creatorId], references: [id])
+  location  String?   // Added this
+  people    String?   // Added this
+  creator   User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId Int
   comments  Comment[]
   likes     Like[]
@@ -34,19 +36,17 @@ model Photo {
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
-  // --- ADDED onDelete: Cascade HERE ---
   photo     Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
   photoId   Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   createdAt DateTime @default(now())
 }
 
 model Like {
   id      Int   @id @default(autoincrement())
-  user    User  @relation(fields: [userId], references: [id])
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  Int
-  // --- ADDED onDelete: Cascade HERE ---
   photo   Photo @relation(fields: [photoId], references: [id], onDelete: Cascade)
   photoId Int
 

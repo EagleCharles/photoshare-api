@@ -36,7 +36,7 @@ export class PhotosController {
   @ApiConsumes('multipart/form-data')
   async create(
     @UploadedFile() file: Express.Multer.File,
-    @Body() body: { title: string; caption?: string },
+    @Body() body: { title: string; caption?: string; location?: string; people?: string }, // Added location and people here
     @Request() req,
   ) {
     if (!file) throw new BadRequestException('No file provided');
@@ -44,6 +44,8 @@ export class PhotosController {
     return this.photosService.create({
       title: body.title,
       caption: body.caption,
+      location: body.location, // Added this
+      people: body.people,     // Added this
       url,
       creatorId: req.user.userId || req.user.id,
     });

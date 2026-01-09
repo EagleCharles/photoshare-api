@@ -9,11 +9,13 @@ export class PhotosService {
 
   constructor(private prisma: PrismaService) {}
 
-  async create(createPhotoDto: CreatePhotoDto) {
+  async create(createPhotoDto: any) { // Changed to any to accept location/people
     return this.prisma.photo.create({
       data: {
         title: createPhotoDto.title,
         caption: createPhotoDto.caption,
+        location: createPhotoDto.location, // Added this
+        people: createPhotoDto.people,     // Added this
         url: createPhotoDto.url,
         creatorId: Number(createPhotoDto.creatorId),
       },

@@ -9,21 +9,25 @@ export class AzureStorageService {
   private readonly blobServiceClient: BlobServiceClient;
 
   constructor() {
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-    if (!connectionString) {
+    const rawConnection = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    
+    if (!rawConnection) {
       throw new Error('AZURE_STORAGE_CONNECTION_STRING not set');
     }
-    this.blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+
+    // FIX: This removes any accidental spaces, newlines, or quotes 
+    // that cause the "Signature did not match" (403) error.
+    const cleanConnectionString = rawConnection.trim().replace(/["']/g, "");
+
+    this.blobServiceClient = BlobServiceClient.fromConnectionString(cleanConnectionString);
   }
 
   async uploadFile(file: Express.Multer.File): Promise<string> {
-    // Get container client
     const containerClient = this.blobServiceClient.getContainerClient(this.containerName);
 
-    // Create container if it doesn't exist
-    await containerClient.createIfNotExists({ access: 'container' });
+    // Note: createIfNotExists is removed to bypass administrative 403 errors.
+    // Ensure the container 'app-photos' exists in your Azure Portal.
 
-    // Generate unique blob name
     const ext = path.extname(file.originalname);
     const blobName = `${uuidv4()}${ext}`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -33,7 +37,7 @@ export class AzureStorageService {
       blobHTTPHeaders: { blobContentType: file.mimetype },
     });
 
-    // Return public URL
+    // Return the public URL of the uploaded blob
     return blockBlobClient.url;
   }
 }

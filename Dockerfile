@@ -7,6 +7,8 @@ RUN npm install
 
 COPY . .
 
+RUN npx prisma generate
+
 EXPOSE 4000
 
-CMD ["npm", "run", "start:dev"]
+CMD npx prisma migrate dev && npm run start:dev

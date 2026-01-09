@@ -7,3 +7,16 @@ DATABASE_URL="postgresql://postgres:JT43Sj962hLKHUVO@photoshare-db-poji.postgres
 
 npm install
 npm run start:dev
+
+
+sudo docker build --memory="800m" -t backend ./PHOTOSHARE-API
+
+sudo docker run -d -p 4000:4000 --name backend backend
+
+# Note: Add "Swap" (Emergency RAM) This gives your VM 2GB of "virtual" RAM on the disk so it doesn't freeze during the build
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+

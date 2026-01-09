@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,19 +13,19 @@ export class UsersController {
 
   @Post('login')
   async login(@Body() loginDto: any) {
-    const user = await this.usersService.findByEmail(loginDto.email);
-    
-    // ✅ Updated logic: Verify both user existence AND password match
-    if (!user || user.password !== loginDto.password) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-
-    return this.authService.login(user);
+    return this.authService.login(loginDto.email, loginDto.password);
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const newUser = await this.usersService.create(createUserDto);
+    return this.authService.login(newUser.email, createUserDto.password);
+  }
+
+  // ✅ New endpoint for Navbar Search
+  @Get('creators/list')
+  findAllCreators() {
+    return this.usersService.findAllCreators();
   }
 
   @Get()
