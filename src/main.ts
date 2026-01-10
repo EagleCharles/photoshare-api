@@ -22,9 +22,9 @@ async function bootstrap() {
     next();
   });
 
-  // ✅ Enable CORS for your Frontend
+  // ✅ Updated: Use FRONTEND_URL from env for your Azure Frontend
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
